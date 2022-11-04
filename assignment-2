@@ -1,0 +1,62 @@
+mport netmiko
+import time
+import difflib
+
+print("Welcome to the remote access.")
+
+connectionInfo = {
+    'device_type':'cisco_ios',
+    'host':'192.168.1.1',
+    'username':'cisco',
+    'password':'cisco',
+    'secret':'class'
+}
+
+print("Connecting via SSH...")
+session = netmiko.ConnectHandler(**connectionInfo)
+session.enable()
+runningConfig = session.send_command("sh running-config")
+startupConfig = session.send_command("sh startup-config")
+
+
+
+
+
+
+differences = difflib.ndiff(runningConfig.readlines(), startupConfig.readlines())
+for diff in differences:
+    print(diff)
+
+configFile = open("runningconfig.txt", "r")
+differencesBackup = difflib.ndiff(runningConfig.readlines(), configFile.readlines())
+for diff in differencesBackup:
+    print(diff)
+
+print()
+
+
+#add menu here like connection info telnet
+
+
+session.close()
+
+print("Saving configuration to a file!")
+file = open("config-output.txt", "w")
+file.write(runningConfig)
+file.close()
+time.sleep(2)
+
+connectionInfoTelnet = {
+    'device_type':'cisco_ios_telnet',
+    'host':'192.168.1.1',
+    'username':'cisco',
+    'password':'cisco',
+    'secret':'class'
+}
+
+print("Connecting via Telnet...")
+
+session = netmiko.ConnectHandler(**connectionInfoTelnet)
+session.enable()
+config = session.send_command("sh running-config")
+session.close()
