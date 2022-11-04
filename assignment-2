@@ -1,4 +1,4 @@
-mport netmiko
+import netmiko
 import time
 import difflib
 
