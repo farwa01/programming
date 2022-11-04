@@ -31,14 +31,21 @@ configFile = open("runningconfig.txt", "r")
 differencesBackup = difflib.ndiff(runningConfig.readlines(), configFile.readlines())
 for diff in differencesBackup:
     print(diff)
-
+ 
 print()
 
-
-#add menu here like connection info telnet
-
+print("Saving configuration to a file!")
+file = open("config-output.txt", "w")
+file.write(runningConfig)
+file.close()
+time.sleep(2)
 
 session.close()
+
+
+
+
+
 
 print("Saving configuration to a file!")
 file = open("config-output.txt", "w")
