@@ -21,11 +21,13 @@ startupConfig = session.send_command("sh startup-config")
 
 
 
-
+print("Difference between running configuration and startup configuration.")
 
 differences = difflib.ndiff(runningConfig.readlines(), startupConfig.readlines())
 for diff in differences:
     print(diff)
+
+print("Difference of running configuration to a offline file.")
 
 configFile = open("runningconfig.txt", "r")
 differencesBackup = difflib.ndiff(runningConfig.readlines(), configFile.readlines())
