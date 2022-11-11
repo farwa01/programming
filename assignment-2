@@ -19,53 +19,19 @@ runningConfig = session.send_command("sh running-config")
 startupConfig = session.send_command("sh startup-config")
 
 
-
-
 print("Difference between running configuration and startup configuration.")
 
-differences = difflib.ndiff(runningConfig.readlines(), startupConfig.readlines())
+differences = difflib.ndiff(runningConfig.split("\n"), startupConfig.split("\n"))
 for diff in differences:
     print(diff)
 
 print("Difference of running configuration to a offline file.")
 
 configFile = open("runningconfig.txt", "r")
-differencesBackup = difflib.ndiff(runningConfig.readlines(), configFile.readlines())
+differencesBackup = difflib.ndiff(runningConfig.split("\n"), configFile.readlines())
 for diff in differencesBackup:
     print(diff)
- 
-print()
-
-print("Saving configuration to a file!")
-file = open("config-output.txt", "w")
-file.write(runningConfig)
-file.close()
-time.sleep(2)
 
 session.close()
 
 
-
-
-
-
-print("Saving configuration to a file!")
-file = open("config-output.txt", "w")
-file.write(runningConfig)
-file.close()
-time.sleep(2)
-
-connectionInfoTelnet = {
-    'device_type':'cisco_ios_telnet',
-    'host':'192.168.1.1',
-    'username':'cisco',
-    'password':'cisco',
-    'secret':'class'
-}
-
-print("Connecting via Telnet...")
-
-session = netmiko.ConnectHandler(**connectionInfoTelnet)
-session.enable()
-config = session.send_command("sh running-config")
-session.close()
