@@ -1,0 +1,46 @@
+import netmiko
+import time
+
+
+print("Welcome to the remote access.")
+
+connectionInfo = {
+    'device_type':'cisco_ios',
+    'host':'192.168.1.1',
+    'username':'cisco',
+    'password':'cisco',
+    'secret':'class'
+}
+
+print("Connecting via SSH...")
+session = netmiko.ConnectHandler(**connectionInfo)
+session.enable()
+
+choice = input("Do you want to configure a loopback (1), protocol (2) or VLANs (3)? ")
+
+if choice == "1":
+	print("Configuring loopback")
+    session.send_config_set['int loopback 0','ip addr 10.10.10.1 255.255.255.0','no shut']
+elif choice == "2":
+	print("Configuring protocol")
+    protocol_choice = input("Do you want to configure OSPF (1) or EIGRP (2)? ")
+    if protocol_choice == "1":
+		print("Configuring OSPF")
+        session.send_config_set['router ospf 1','network 192.168.23.0 0.0.0.255 area 0']
+    elif protocol_choice == "2":
+		print ("Configuring EIGRP")
+        #eigrp command(s)
+        session.send_config_set['router eigrp 20','network 192.168.1.1','network 10.0.0.0 0.0.0.255']
+elif choice == "3":
+	print("Configuring VLANs")
+    #vlan commands
+    session.send_config_set['vlan 1', 'name VLAN_1']
+    session.close()
+    connectionInfo['host'] = input("Second switch address: ")
+    session = netmiko.ConnectHandler(**connectionInfo)
+    session.enable()
+	print("Configuring VLAN on the second device")
+    #vlan commands
+    session.send_config_set['vlan 1', 'name VLAN_1']
+   
+session.close()
